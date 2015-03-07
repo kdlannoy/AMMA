@@ -3,16 +3,15 @@
 #include <stdlib.h>
 #include <string>
 #include <iostream>
-#include <cv.h>
-#include <highgui.h>
+#include <opencv\cv.h>
+#include <opencv\highgui.h>
 #include <zmq.h>
 #include <WinSock2.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <opencv/../../include/opencv2/opencv.hpp>
-//#include <opencv/../opencv.hpp>
-#include <zmq.h>
+//#include <opencv/../opencv.hpp
 #include <thread>
 
 

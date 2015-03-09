@@ -28,6 +28,7 @@ void server(){
 	uchar* img = (uchar*) malloc(IMG_SIZE);
 	char buf[BUFLEN];
 	void *context = zmq_ctx_new();
+	
 	void *socket = zmq_socket(context, ZMQ_PAIR);
 
 	cout << "Initialize the socket" << endl;
@@ -86,6 +87,7 @@ void client(){
         int rc = 0;
         void *context = zmq_ctx_new();
         void *socket = zmq_socket(context, ZMQ_PAIR);
+		
 		//CameraReader camera = new CameraReader();
 
 		cout << "Enter ip of server" << endl;

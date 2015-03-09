@@ -4,11 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenCvTest", "OpenCvTest\OpenCvTest.vcxproj", "{C986EEB9-3E58-47FD-BE98-2E0CC03C9D40}"
-	ProjectSection(ProjectDependencies) = postProject
-		{05D9761A-A8FB-4012-8432-6179C1759C12} = {05D9761A-A8FB-4012-8432-6179C1759C12}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server", "Server\Server.vcxproj", "{05D9761A-A8FB-4012-8432-6179C1759C12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +16,6 @@ Global
 		{C986EEB9-3E58-47FD-BE98-2E0CC03C9D40}.Release|Win32.ActiveCfg = Debug|Win32
 		{C986EEB9-3E58-47FD-BE98-2E0CC03C9D40}.Release|Win32.Build.0 = Debug|Win32
 		{C986EEB9-3E58-47FD-BE98-2E0CC03C9D40}.Release|Win32.Deploy.0 = Debug|Win32
-		{05D9761A-A8FB-4012-8432-6179C1759C12}.Debug|Win32.ActiveCfg = Debug|Win32
-		{05D9761A-A8FB-4012-8432-6179C1759C12}.Debug|Win32.Build.0 = Debug|Win32
-		{05D9761A-A8FB-4012-8432-6179C1759C12}.Release|Win32.ActiveCfg = Release|Win32
-		{05D9761A-A8FB-4012-8432-6179C1759C12}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

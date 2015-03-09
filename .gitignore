@@ -51,3 +51,8 @@ OpenCvTest/OpenCvTest/Debug/OpenCvTest.tlog/OpenCvTest.lastbuildstate
 *.tlog
 OpenCvTest/OpenCvTest/Release/OpenCvTest.tlog/CL.read.1.tlog
 *.vcxproj
+OpenCvTest/OpenCvTest.sdf
+*.sdf
+OpenCvTest/OpenCvTest/Debug/OpenCvTest.tlog/cl.command.1.tlog
+*.lastbuildstate
+OpenCvTest/OpenCvTest/OpenCV_Debug.props

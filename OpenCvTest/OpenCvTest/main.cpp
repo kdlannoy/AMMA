@@ -1,14 +1,11 @@
-#include <WinSock2.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include <iostream>
-#include <opencv\cv.h>
-#include <opencv\highgui.h>
-#include <zmq.h>
 #include <WinSock2.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
+#include <zmq.h>
 #include <string.h>
 #include <opencv/../../include/opencv2/opencv.hpp>
 //#include <opencv/../opencv.hpp

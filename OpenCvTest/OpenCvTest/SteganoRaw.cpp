@@ -3,41 +3,9 @@
 #include <bitset>
 #include <iostream>
 #include "SteganoRaw.h"
+#define BIT_TO_CHANGE 0
 
 using namespace std;
-
-
-//int imgStega(IplImage *img, char *msg)
-//{
-//	int width = img->width;
-//	int height = img->height;
-//	uchar *data = (uchar*)img->imageData;
-//
-//
-//	int j, k = 0;
-//	int len = strlen(msg);
-//	char *new_str = (char*)malloc((len + 4)*sizeof(char));
-//
-//	new_str[0] = '$';
-//
-//	for (j = 1; j <= len; j++)
-//		new_str[j] = msg[j - 1];
-//
-//	new_str[len + 1] = '$';
-//	new_str[len + 2] = '$';
-//	new_str[len + 3] = '$';
-//
-//	if (img->nChannels != 3)
-//		return -1;
-//
-//	for (int i = 0; i < height; i++){
-//		for (j = 0, k = 0; j < width || k < (len + 4); j += 3, k++)
-//			data[j * 3 + i] = new_str[k];
-//	}
-//
-//	return 0;
-//}
-
 
 
 int imgStega(IplImage *img, char *msg) {
@@ -70,20 +38,29 @@ int imgStega(IplImage *img, char *msg) {
 			//get color value
 			unsigned char color = data[i * 3 + j];
 			bitset<8> bs(color);
-			
-			//change bs[7] to our text (MSB)
-			bs[7] = new_str_bits[index/8].at(index%8);
-			cout << bs[7];
+
+			//change bs[BIT_TO_CHANGE] to our text (MSB)
+			bs[BIT_TO_CHANGE] = new_str_bits[index / 8].at(index % 8);
 			data[i * 3 + j] = char(bs.to_ulong());
 			index++;
-			
+
 		}
 		//TODO: make sure the last $ fills whole pixel
 		//if not, we will get a character on the decoding side that has ascii number > 36 (36 == '$')
 
 	}
+
+	//fill last whole pixel with zero values to get $ as char at decoder end:
+	if ((new_str.size() * 8) % 3 != 0){
+		for (int i = neededAmountOfPixels % 3; i < 8-(neededAmountOfPixels%3); i++){
+			unsigned char color = data[neededAmountOfPixels*3 + i];
+			bitset<8> bs(color);
+
+			bs[BIT_TO_CHANGE] = 0;
+			data[neededAmountOfPixels*3 + i] = char(bs.to_ulong());
+		}
+	}
 	printf("\n%s\n", "steganografy passed");
-	getchar();
 	return 0;
 }
 
@@ -100,12 +77,16 @@ char* imgDestega(IplImage *img) {
 	int width = img->width;
 	int height = img->height;
 	int length = 0;
+	//firstDelimeter passed?
 	bool firstDel = false;
+	//secondDelimeter passed?
 	bool secondDel = false;
+
+
+
 	uchar* data = (uchar*)img->imageData;
 
-	string result = "";
-	char* res = (char*)malloc(sizeof(char) * 0);
+	char* res = (char*)malloc(sizeof(char));
 	bool tmp[8] = {0,0,0,0,0,0,0,0};
 	int newIndex = 0;
 	for (int i = 0; i < width*height; i++) {
@@ -113,30 +94,35 @@ char* imgDestega(IplImage *img) {
 			unsigned char color = data[i * 3 + j];
 			//convert color value to bits
 			bitset<8> bs(color);
-			tmp[newIndex%8] = bs.at(7);
+			tmp[newIndex%8] = bs.at(BIT_TO_CHANGE);
 			
 			newIndex++;
 
 			//convert last 8 bits to char
-			if (newIndex%8 == 0){
-				
+			if (newIndex % 8 == 0){
+
 				//printf("number: %u\n", ToByte(tmp));
 				//cout << ToByte(tmp) << endl;
 				//getchar();
-				if (firstDel && secondDel)
-					return "";
-				if (!firstDel && ToByte(tmp)==36)
+				if (firstDel && secondDel){
+				length++;
+				res = (char*)realloc(res, sizeof(char)*length);
+				res[length - 1] = '\0';
+				return res;
+				}
+				if (!firstDel && ToByte(tmp) == 36)
 					firstDel = 1;
 				else if (!secondDel && ToByte(tmp)==36)
 					secondDel = 1;
-				else if (secondDel)
-					return "";
-				else{
+				else if (secondDel){
 					length++;
 					res = (char*)realloc(res, sizeof(char)*length);
-					res[length - 1] = (char)ToByte(tmp);
-					cout << ToByte(tmp);
-					getchar();
+					res[length - 1] = '\0';
+					return res;
+				}else{
+					length++;
+					res = (char*) realloc(res, sizeof(char)*length);
+					res[length - 1] = (char)ToByte(tmp);		
 				}
 				
 			}
@@ -147,44 +133,3 @@ char* imgDestega(IplImage *img) {
 
 	return res;
 }
-
-
-
-//char *imgDestega(IplImage *img)
-//{
-//	int width = img->width;
-//	uchar *data = (uchar*)img->imageData;
-//
-//	int j, k = 0;
-//	char find;
-//	char *buffer = NULL;
-//
-//	for (j = 0; j < width; j += 3)
-//	{
-//		find = data[j * 3];
-//
-//		if (j == 0)
-//		{
-//			if (find != '$')
-//				exit(EXIT_FAILURE);
-//			else
-//				continue;
-//		}
-//		else
-//		{
-//			if (find == '$' && data[j*3+1] == '$' && data[j*3+2] == '$')
-//				break;
-//			else
-//			{
-//				buffer = (char*)realloc(buffer, (k + 1)*sizeof(char));
-//				buffer[k] = find;
-//				k++;
-//			}
-//		}
-//	}
-//
-//	buffer = (char*)realloc(buffer, (k + 1)*sizeof(char));
-//	buffer[k] = '\0';
-//
-//	return buffer;
-//}

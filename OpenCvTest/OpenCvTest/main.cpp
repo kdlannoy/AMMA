@@ -161,15 +161,15 @@ int main(int argc, char** argv){
 
 	return 0;*/
 
-	IplImage* img = cvLoadImage("C:/Users/kiani/Downloads/fruit.jpg", CV_LOAD_IMAGE_ANYCOLOR);
-	imgStega(img, "negersa");
+	IplImage* img = cvLoadImage("C:/Users/kiani/Downloads/fruit.jpg");
+	imgStega(img, "We zijn heel vrolijk vandaag, want de chat kan nu in de afbeelding geëncrypteerd worden.");
 	bitset<8> bs;
 	//convert color value to bits
 	for (int k = 0; k < 8; k++) {
 		bs[k] = ((img->imageData[0] >> k) & 1);
 	}
-	//cvSaveImage("C:/Users/kiani/Downloads/test.jpg", img);
-	//img = cvLoadImage("C:/Users/kiani/Downloads/test.jpg", CV_LOAD_IMAGE_ANYCOLOR);
+	cvSaveImage("C:/Users/kiani/Downloads/test.jpg", img);
+	//IplImage* img2 = cvLoadImage("C:/Users/kiani/Downloads/test.jpg");
 	printf("result: %s",imgDestega(img));
 	std::getchar();
 }

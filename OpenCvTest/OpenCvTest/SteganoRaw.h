@@ -19,6 +19,6 @@ int imgStega(IplImage*, char*);
 /* Decrypts a text from a bitmap image.
 * An error will result a return of -1 or 0 on successfull decryption.
 */
-char *imgDestega(IplImage*);
+char* imgDestega(IplImage*);
 
 #endif // !STEGANORAW_H

@@ -13,6 +13,7 @@
 #include <opencv/../../include/opencv2/opencv.hpp>
 //#include <opencv/../opencv.hpp
 #include <thread>
+#include <bitset>
 
 #include "SteganoRaw.h"
 
@@ -152,11 +153,23 @@ void client(){
 }
 
 int main(int argc, char** argv){
-	thread t1(server);
+	/*thread t1(server);
 	thread t2(client);
 
 	t1.join();
 	t2.join();
 
-	return 0;
+	return 0;*/
+
+	IplImage* img = cvLoadImage("C:/Users/jan/Downloads/fruit.jpg", CV_LOAD_IMAGE_ANYCOLOR);
+	imgStega(img, "n");
+	bitset<8> bs;
+	//convert color value to bits
+	for (int k = 0; k < 8; k++) {
+		bs[k] = ((img->imageData[0] >> k) & 1);
+	}
+	cvSaveImage("C:/Users/jan/Downloads/test.jpg", img, 0);
+	img = cvLoadImage("C:/Users/jan/Downloads/test.jpg", CV_LOAD_IMAGE_ANYCOLOR);
+	imgDestega(img);
+	std::getchar();
 }

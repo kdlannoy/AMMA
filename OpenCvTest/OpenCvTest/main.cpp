@@ -14,6 +14,9 @@
 //#include <opencv/../opencv.hpp
 #include <thread>
 
+#include "SteganoRaw.h"
+
+
 
 using namespace cv;
 using namespace std;
@@ -131,13 +134,9 @@ void client(){
 		int img_size = cameraFrame.cols*cameraFrame.rows * 3;
 
 
-
-
-
-
-
 		for (int i = 0; i < img_size / BUFLEN + 1; i++){
 			rc = zmq_send(socket, (img + i*BUFLEN), BUFLEN, 0);
+
 			if (rc == -1){
 				cout << "Error while sending" << endl;
 				return;
@@ -152,12 +151,12 @@ void client(){
 
 }
 
-int main(int argc, char** argv){
-	thread t1(server);
-	thread t2(client);
-
-	t1.join();
-	t2.join();
-
-	return 0;
-}
+//int main(int argc, char** argv){
+//	thread t1(server);
+//	thread t2(client);
+//
+//	t1.join();
+//	t2.join();
+//
+//	return 0;
+//}

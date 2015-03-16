@@ -94,7 +94,6 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SteganoRaw.cpp" />
-    <ClCompile Include="SteganoTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SteganoRaw.h" />

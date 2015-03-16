@@ -151,12 +151,12 @@ void client(){
 
 }
 
-//int main(int argc, char** argv){
-//	thread t1(server);
-//	thread t2(client);
-//
-//	t1.join();
-//	t2.join();
-//
-//	return 0;
-//}
+int main(int argc, char** argv){
+	thread t1(server);
+	thread t2(client);
+
+	t1.join();
+	t2.join();
+
+	return 0;
+}

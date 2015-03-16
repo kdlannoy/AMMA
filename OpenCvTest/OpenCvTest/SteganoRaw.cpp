@@ -73,11 +73,17 @@ int imgStega(IplImage *img, char *msg) {
 			
 			//change bs[7] to our text (MSB)
 			bs[7] = new_str_bits[index/8].at(index%8);
+			cout << bs[7];
 			data[i * 3 + j] = char(bs.to_ulong());
 			index++;
+			
 		}
-	}
+		//TODO: make sure the last $ fills whole pixel
+		//if not, we will get a character on the decoding side that has ascii number > 36 (36 == '$')
 
+	}
+	printf("\n%s\n", "steganografy passed");
+	getchar();
 	return 0;
 }
 
@@ -93,10 +99,13 @@ unsigned char ToByte(bool b[8])
 char* imgDestega(IplImage *img) {
 	int width = img->width;
 	int height = img->height;
-
+	int length = 0;
+	bool firstDel = false;
+	bool secondDel = false;
 	uchar* data = (uchar*)img->imageData;
 
 	string result = "";
+	char* res = (char*)malloc(sizeof(char) * 0);
 	bool tmp[8] = {0,0,0,0,0,0,0,0};
 	int newIndex = 0;
 	for (int i = 0; i < width*height; i++) {
@@ -104,21 +113,39 @@ char* imgDestega(IplImage *img) {
 			unsigned char color = data[i * 3 + j];
 			//convert color value to bits
 			bitset<8> bs(color);
-			tmp[newIndex] = bs.at(7);
+			tmp[newIndex%8] = bs.at(7);
+			
 			newIndex++;
 
 			//convert last 8 bits to char
-			if (newIndex > 8){
-				printf("number: %u\n", ToByte(tmp));
-				cout << ToByte(tmp) << endl;
-				getchar();
+			if (newIndex%8 == 0){
+				
+				//printf("number: %u\n", ToByte(tmp));
+				//cout << ToByte(tmp) << endl;
+				//getchar();
+				if (firstDel && secondDel)
+					return "";
+				if (!firstDel && ToByte(tmp)==36)
+					firstDel = 1;
+				else if (!secondDel && ToByte(tmp)==36)
+					secondDel = 1;
+				else if (secondDel)
+					return "";
+				else{
+					length++;
+					res = (char*)realloc(res, sizeof(char)*length);
+					res[length - 1] = (char)ToByte(tmp);
+					cout << ToByte(tmp);
+					getchar();
+				}
+				
 			}
 
 			//check if char == $
 		}
 	}
 
-	return "result";
+	return res;
 }
 
 

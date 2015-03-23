@@ -160,16 +160,16 @@ int main(int argc, char** argv){
 	t2.join();
 
 	return 0;*/
+	Mat matimg = imread("C:/Users/kiani/Downloads/fruit.jpg");
+	imgStegaMat(&matimg, "negers in de bomen. We raken ze niet kwijt. Ooit rare dingen meegemaakt. Tussen de lift gebleven. Zichzelf opgehangen.");
 
-	IplImage* img = cvLoadImage("C:/Users/kiani/Downloads/fruit.jpg");
-	imgStega(img, "We zijn heel vrolijk vandaag, want de chat kan nu in de afbeelding geëncrypteerd worden.");
-	bitset<8> bs;
-	//convert color value to bits
-	for (int k = 0; k < 8; k++) {
-		bs[k] = ((img->imageData[0] >> k) & 1);
-	}
-	cvSaveImage("C:/Users/kiani/Downloads/test.jpg", img);
-	//IplImage* img2 = cvLoadImage("C:/Users/kiani/Downloads/test.jpg");
-	printf("result: %s",imgDestega(img));
+	printf("result: %s", imgDestegaMat(&matimg));
+
+	//IplImage* img = cvLoadImage("C:/Users/kiani/Downloads/fruit.jpg");
+	//imgStega(img, "We zijn heel vrolijk vandaag, want de chat kan nu in de afbeelding geëncrypteerd worden.");
+	//
+	//cvSaveImage("C:/Users/kiani/Downloads/test.jpg", img);
+	////IplImage* img2 = cvLoadImage("C:/Users/kiani/Downloads/test.jpg");
+	//printf("result: %s",imgDestega(img));
 	std::getchar();
 }

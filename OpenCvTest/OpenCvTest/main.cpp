@@ -161,14 +161,14 @@ int main(int argc, char** argv){
 
 	return 0;*/
 	Mat matimg = imread("C:/Users/kiani/Downloads/fruit.jpg");
-	imgStegaMat(&matimg, "negers in de bomen. We raken ze niet kwijt. Ooit rare dingen meegemaakt. Tussen de lift gebleven. Zichzelf opgehangen.");
+	char* toEncode = "This is a test phrase. Hello World!........fdsqfdsqfdsq";
+	printf("%-15s %s\n", "Encoding:", toEncode);
+	imgStegaMat(&matimg,toEncode);
 
-	printf("result: %s", imgDestegaMat(&matimg));
+	printf("%-15s %s\n", "Result decoder:",imgDestegaMat(&matimg));
 
-	//IplImage* img = cvLoadImage("C:/Users/kiani/Downloads/fruit.jpg");
-	//imgStega(img, "We zijn heel vrolijk vandaag, want de chat kan nu in de afbeelding geëncrypteerd worden.");
-	//
-	//cvSaveImage("C:/Users/kiani/Downloads/test.jpg", img);
+	
+	imwrite("C:/Users/kiani/Downloads/test.jpg", matimg);
 	////IplImage* img2 = cvLoadImage("C:/Users/kiani/Downloads/test.jpg");
 	//printf("result: %s",imgDestega(img));
 	std::getchar();

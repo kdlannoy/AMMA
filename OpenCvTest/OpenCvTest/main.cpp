@@ -34,6 +34,8 @@ void server(){
 	void *context = zmq_ctx_new();
 
 	void *socket = zmq_socket(context, ZMQ_PAIR);
+
+
 	
 
 	cout << "Initialize the socket" << endl;
@@ -112,6 +114,8 @@ void client(){
 	}*/
 
 	VideoCapture stream1(0);
+	//Capture in YUV (4:2:0)
+	stream1.set(CV_CAP_PROP_CONVERT_RGB, false);
 
 	while (1){
 		////query frame
@@ -120,6 +124,7 @@ void client(){
 		////cvShowImage("Sending", frame);
 
 		Mat cameraFrame;
+		
 		stream1.read(cameraFrame);
 
 		/*		imshow("Testingwindow", cameraFrame);
@@ -152,6 +157,53 @@ void client(){
 
 }
 
+void captureToYuv(){
+	VideoCapture vcap(0);
+	if (!vcap.isOpened()){
+		cout << "Error opening video stream or file" << endl;
+		return;
+	}
+
+	int frame_width = vcap.get(CV_CAP_PROP_FRAME_WIDTH);
+	int frame_height = vcap.get(CV_CAP_PROP_FRAME_HEIGHT);
+	int fps = vcap.get(CV_CAP_PROP_FPS);
+	Size frameSize(static_cast<int>(frame_width), static_cast<int>(frame_height));
+	VideoWriter oVideoWriter("D:/MyVideo.yuv", CV_FOURCC('H', 'D', 'Y', 'C'), 30, frameSize, true); //initialize the VideoWriter object 
+
+	if (!oVideoWriter.isOpened()) //if not initialize the VideoWriter successfully, exit the program
+	{
+		cout << "ERROR: Failed to write the video" << endl;
+		return;
+	}
+
+	while (1)
+	{
+
+		Mat frame;
+
+		bool bSuccess = vcap.read(frame); // read a new frame from video
+
+		if (!bSuccess) //if not success, break loop
+		{
+			cout << "ERROR: Cannot read a frame from video file" << endl;
+			break;
+		}
+
+		oVideoWriter.write(frame); //writer the frame into the file
+
+		imshow("MyVideo", frame); //show the frame in "MyVideo" window
+
+		if (waitKey(10) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
+		{
+			cout << "esc key is pressed by user" << endl;
+			break;
+		}
+	}
+
+	
+
+}
+
 int main(int argc, char** argv){
 	/*thread t1(server);
 	thread t2(client);
@@ -160,16 +212,25 @@ int main(int argc, char** argv){
 	t2.join();
 
 	return 0;*/
-	Mat matimg = imread("C:/Users/kiani/Downloads/fruit.jpg");
-	char* toEncode = "This is a test phrase. Hello World!........fdsqfdsqfdsq";
-	printf("%-15s %s\n", "Encoding:", toEncode);
-	imgStegaMat(&matimg,toEncode);
+	//Mat matimg = imread("C:/Users/kiani/Downloads/fruit.jpg");
+	//string input;
+	//getline(cin, input);
+	//while (input != "stop"){
+	//	char* toEncode = (char*) input.c_str();
+	//	printf("%-15s %s\n", "Encoding:", toEncode);
+	//	imgStegaMat(&matimg, toEncode);
 
-	printf("%-15s %s\n", "Result decoder:",imgDestegaMat(&matimg));
-
-	
-	imwrite("C:/Users/kiani/Downloads/test.jpg", matimg);
+	//	printf("%-15s %s\n", "Result decoder:", imgDestegaMat(&matimg));
+	//	getline(cin, input);
+	//	printf("\n\n");
+	//}
+	//
+	//
+	//getchar();
+	//imwrite("C:/Users/kiani/Downloads/test.jpg", matimg);
 	////IplImage* img2 = cvLoadImage("C:/Users/kiani/Downloads/test.jpg");
 	//printf("result: %s",imgDestega(img));
-	std::getchar();
+	//std::getchar();
+	captureToYuv();
+
 }

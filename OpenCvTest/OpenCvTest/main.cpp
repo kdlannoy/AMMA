@@ -22,6 +22,7 @@ using namespace std;
 #define IMG_SIZE 921600
 #define BUFLEN 2048
 
+# pragma comment (lib, "avformat.lib")
 
 void server(){
 
@@ -135,52 +136,53 @@ void client(){
 	*      the payloads of all output NALs are guaranteed to be sequential in memory. */
 	x265_nal *pp_nal;
 	uint32_t pi_nal;
-	//x265_encoder_encode(encoder, &pp_nal, &pi_nal, pic_in, pic_out);
-
-	InputFileInfo info;
-	info.filename = "bus_cif.yuv";
-	info.depth = 8;
-	info.csp = param->internalCsp;
-	info.width = param->sourceWidth;
-	info.height = param->sourceHeight;
-	info.fpsNum = param->fpsNum;
-	info.fpsDenom = param->fpsDenom;
-	info.sarWidth = param->vui.sarWidth;
-	info.sarHeight = param->vui.sarHeight;
-	info.skipFrames = 0;
-	info.frameCount = 0;
-	getParamAspectRatio(param, info.sarWidth, info.sarHeight);
-
-	Input*  input = new YUVInput(info);
-
-	param->totalFrames = 150;
-	if (param->logLevel >= X265_LOG_INFO)
-	{
-		char buf[128];
-		int p = sprintf(buf, "%dx%d fps %d/%d %sp%d", param->sourceWidth, param->sourceHeight,
-			param->fpsNum, param->fpsDenom, x265_source_csp_names[param->internalCsp], info.depth);
-
-		int width, height;
-		getParamAspectRatio(param, width, height);
-		if (width && height)
-			p += sprintf(buf + p, " sar %d:%d", width, height);
-
-		fprintf(stderr, "%s  [info]: %s\n", input->getName(), buf);
-	}
-
-	input->startReader();
-
-	std::fstream bitstreamFile;
-	bitstreamFile.open("out.hevc", std::fstream::binary | std::fstream::out);
-	if (!bitstreamFile)
-	{
-		x265_log(NULL, X265_LOG_ERROR, "failed to open bitstream file <%s> for writing\n", "out.hevc");
-		return;
-	}
-	
-	/* x265_encoder_open:
-	*      create a new encoder handler, all parameters from x265_param are copied */
 	x265_encoder *encoder = x265_encoder_open(param);
+	x265_encoder_encode(encoder, &pp_nal, &pi_nal, pic_in, pic_out);
+
+	//InputFileInfo info;
+	//info.filename = "bus_cif.yuv";
+	//info.depth = 8;
+	//info.csp = param->internalCsp;
+	//info.width = param->sourceWidth;
+	//info.height = param->sourceHeight;
+	//info.fpsNum = param->fpsNum;
+	//info.fpsDenom = param->fpsDenom;
+	//info.sarWidth = param->vui.sarWidth;
+	//info.sarHeight = param->vui.sarHeight;
+	//info.skipFrames = 0;
+	//info.frameCount = 0;
+	//getParamAspectRatio(param, info.sarWidth, info.sarHeight);
+
+	//Input*  input = new YUVInput(info);
+
+	//param->totalFrames = 150;
+	//if (param->logLevel >= X265_LOG_INFO)
+	//{
+	//	char buf[128];
+	//	int p = sprintf(buf, "%dx%d fps %d/%d %sp%d", param->sourceWidth, param->sourceHeight,
+	//		param->fpsNum, param->fpsDenom, x265_source_csp_names[param->internalCsp], info.depth);
+
+	//	int width, height;
+	//	getParamAspectRatio(param, width, height);
+	//	if (width && height)
+	//		p += sprintf(buf + p, " sar %d:%d", width, height);
+
+	//	fprintf(stderr, "%s  [info]: %s\n", input->getName(), buf);
+	//}
+
+	//input->startReader();
+
+	//std::fstream bitstreamFile;
+	//bitstreamFile.open("out.hevc", std::fstream::binary | std::fstream::out);
+	//if (!bitstreamFile)
+	//{
+	//	x265_log(NULL, X265_LOG_ERROR, "failed to open bitstream file <%s> for writing\n", "out.hevc");
+	//	return;
+	//}
+	//
+	///* x265_encoder_open:
+	//*      create a new encoder handler, all parameters from x265_param are copied */
+	//x265_encoder *encoder = x265_encoder_open(param);
 
 
 

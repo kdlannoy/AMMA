@@ -22,14 +22,14 @@
 
 using namespace cv;
 using namespace std;
-#define IMG_SIZE 921600
-#define BUFLEN 2048
-
+#define BUFLEN 1584
+int IMG_SIZE = 25344;
 
 void server(){
 
 	//init socket	
 	int rc = 0;
+	
 	uchar* img = (uchar*)malloc(IMG_SIZE);
 	char buf[BUFLEN];
 	void *context = zmq_ctx_new();
@@ -62,8 +62,8 @@ void server(){
 		}
 
 
-		Mat imageToShow = Mat(480, 640, 16, img);
-		imageToShow.data = img;
+		Mat imageToShow = Mat(144, 176, CV_8UC3, img);
+		//imageToShow.data = img;
 		imshow("Afbeelding", imageToShow);
 		if (waitKey(1)>0)
 			break;
@@ -137,8 +137,11 @@ void client(){
 		//cout << "Cols: " << (int)cameraFrame.cols <<  "\nRows: " << (int)cameraFrame.rows << "\nType: " << (int)cameraFrame.type() << endl;
 
 		//         //   //sending frame
-		uchar* img = cameraFrame.data;
-		int img_size = cameraFrame.cols*cameraFrame.rows * 3;
+		Mat resized;
+		Size size(144, 176);
+		resize(cameraFrame, resized, size);
+		uchar* img = resized.data;
+		int img_size = resized.cols*resized.rows * 3;
 
 
 		for (int i = 0; i < img_size / BUFLEN + 1; i++){
@@ -206,8 +209,8 @@ void captureToYuv(){
 }
 
 int main(int argc, char** argv){
-
 	/*thread t1(server);
+	thread t1(server);
 	thread t2(client);
 	t1.join();
 	t2.join();

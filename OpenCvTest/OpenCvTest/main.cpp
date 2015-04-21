@@ -14,9 +14,10 @@
 //#include <opencv/../opencv.hpp
 #include <thread>
 #include <bitset>
-
 #include "SteganoRaw.h"
-
+#include "encoder.h"
+#include "yuv.h"
+#include "param.h"
 
 
 using namespace cv;
@@ -205,6 +206,7 @@ void captureToYuv(){
 }
 
 int main(int argc, char** argv){
+
 	/*thread t1(server);
 	thread t2(client);
 	t1.join();

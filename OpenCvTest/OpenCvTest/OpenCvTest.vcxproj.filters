@@ -21,6 +21,9 @@
     <ClCompile Include="yuv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SteganoRaw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="encoder.h">
@@ -60,6 +63,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="winxp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SteganoRaw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

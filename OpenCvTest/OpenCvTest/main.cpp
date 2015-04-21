@@ -36,7 +36,7 @@ void server(){
 	void *socket = zmq_socket(context, ZMQ_PAIR);
 
 
-	
+
 
 	cout << "Initialize the socket" << endl;
 	rc = zmq_bind(socket, "tcp://*:9000");
@@ -124,13 +124,13 @@ void client(){
 		////cvShowImage("Sending", frame);
 
 		Mat cameraFrame;
-		
+
 		stream1.read(cameraFrame);
 
 		/*		imshow("Testingwindow", cameraFrame);
-				if (waitKey(1) >= 0)
-				break;
-				*/
+		if (waitKey(1) >= 0)
+		break;
+		*/
 
 
 		//cout << "Cols: " << (int)cameraFrame.cols <<  "\nRows: " << (int)cameraFrame.rows << "\nType: " << (int)cameraFrame.type() << endl;
@@ -200,17 +200,15 @@ void captureToYuv(){
 		}
 	}
 
-	
+
 
 }
 
 int main(int argc, char** argv){
 	/*thread t1(server);
 	thread t2(client);
-
 	t1.join();
 	t2.join();
-
 	return 0;*/
 	//Mat matimg = imread("C:/Users/kiani/Downloads/fruit.jpg");
 	//string input;

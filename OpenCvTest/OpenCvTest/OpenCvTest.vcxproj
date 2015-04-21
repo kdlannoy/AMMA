@@ -55,13 +55,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\kiani\Documents\GitHub\AMMA\OpenCvTest\OpenCvTest\Debug;C:\Program Files (x86)\ZeroMQ 4.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Tim Deweert\Documents\GitHub\AMMA\OpenCvTest\OpenCvTest\Debug;C:\Program Files %28x86%29\ZeroMQ 4.0.4\include;C:\ffmpeg_dev\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files (x86)\ZeroMQ 4.0.4\lib;Debug\common.lib;Debug\x265-static.lib;Debug\encoder.lib;Debug\ffmpeg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\ZeroMQ 4.0.4\lib;Debug\common.lib;Debug\x265-static.lib;Debug\encoder.lib;Debug\ffmpeg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libzmq-v120-mt-4_0_4.lib;libzmq-v120-mt-gd-4_0_4.lib;Debug\x265-static.lib;Debug\encoder.lib;Debug\common.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>

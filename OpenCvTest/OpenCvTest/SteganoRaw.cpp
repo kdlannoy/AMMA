@@ -64,7 +64,7 @@ int imgStegaMat(cv::Mat* img, char *msg) {
 
 	//fill last whole pixel with zero values to get $ as char at decoder end:
 	if ((new_str.size() * 8) % 3 != 0){
-		for (int i = 0; i < (new_str.size() * 8)%3; i++){
+		for (int i = 0; i < (new_str.size() * 8) % 3; i++){
 			unsigned char color = data[neededAmountOfPixels * 3 + i];
 			bitset<8> bs(color);
 

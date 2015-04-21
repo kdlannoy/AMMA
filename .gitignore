@@ -8,7 +8,7 @@
 #Except cpp files
 !*.cpp
 !*.h
-*.vcxproj
-OpenCvTest/OpenCvTest/OpenCvTest.vcxproj
-*.filters
-OpenCvTest/OpenCvTest/SteganoRaw.cpp
+
+!OpenCvTest/OpenCvTest/SteganoRaw.cpp
+
+!OpenCvTest/OpenCvTest/SteganoRaw.cpp

@@ -22,14 +22,14 @@
 
 using namespace cv;
 using namespace std;
-#define BUFLEN 1584
-int IMG_SIZE = 25344;
+#define IMG_SIZE 19200
+#define BUFLEN 1920
+
 
 void server(){
 
 	//init socket	
 	int rc = 0;
-	
 	uchar* img = (uchar*)malloc(IMG_SIZE);
 	char buf[BUFLEN];
 	void *context = zmq_ctx_new();
@@ -62,8 +62,8 @@ void server(){
 		}
 
 
-		Mat imageToShow = Mat(144, 176, CV_8UC3, img);
-		//imageToShow.data = img;
+		Mat imageToShow = Mat(144, 176, 16, img);
+		imageToShow.data = img;
 		imshow("Afbeelding", imageToShow);
 		if (waitKey(1)>0)
 			break;
@@ -116,7 +116,10 @@ void client(){
 
 	VideoCapture stream1(0);
 	//Capture in YUV (4:2:0)
+	stream1.set(CV_CAP_PROP_FRAME_WIDTH, 160);
+	stream1.set(CV_CAP_PROP_FRAME_WIDTH, 120);
 	stream1.set(CV_CAP_PROP_CONVERT_RGB, false);
+	
 
 	while (1){
 		////query frame
@@ -137,11 +140,11 @@ void client(){
 		//cout << "Cols: " << (int)cameraFrame.cols <<  "\nRows: " << (int)cameraFrame.rows << "\nType: " << (int)cameraFrame.type() << endl;
 
 		//         //   //sending frame
-		Mat resized;
-		Size size(144, 176);
-		resize(cameraFrame, resized, size);
-		uchar* img = resized.data;
-		int img_size = resized.cols*resized.rows * 3;
+
+		
+		
+		uchar* img = cameraFrame.data;
+		int img_size = cameraFrame.cols*cameraFrame.rows * 3;
 
 
 		for (int i = 0; i < img_size / BUFLEN + 1; i++){

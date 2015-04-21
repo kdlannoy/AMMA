@@ -18,11 +18,53 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="yuv.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="SteganoRaw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="encoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scalinglist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="slice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="x265.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="x265_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="yuv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="threading.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="param.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="winxp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="SteganoRaw.h">
       <Filter>Header Files</Filter>
     </ClInclude>

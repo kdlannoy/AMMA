@@ -168,14 +168,14 @@ void captureToYuv(){
 	int frame_width = vcap.get(CV_CAP_PROP_FRAME_WIDTH);
 	int frame_height = vcap.get(CV_CAP_PROP_FRAME_HEIGHT);
 	int fps = vcap.get(CV_CAP_PROP_FPS);
-	Size frameSize(static_cast<int>(frame_width), static_cast<int>(frame_height));
+	/*Size frameSize(static_cast<int>(frame_width), static_cast<int>(frame_height));
 	VideoWriter oVideoWriter("D:/MyVideo.yuv", CV_FOURCC('H', 'D', 'Y', 'C'), 30, frameSize, true); //initialize the VideoWriter object 
 
 	if (!oVideoWriter.isOpened()) //if not initialize the VideoWriter successfully, exit the program
 	{
 		cout << "ERROR: Failed to write the video" << endl;
 		return;
-	}
+	}*/
 
 	while (1)
 	{
@@ -189,8 +189,6 @@ void captureToYuv(){
 			cout << "ERROR: Cannot read a frame from video file" << endl;
 			break;
 		}
-
-		oVideoWriter.write(frame); //writer the frame into the file
 
 		imshow("MyVideo", frame); //show the frame in "MyVideo" window
 

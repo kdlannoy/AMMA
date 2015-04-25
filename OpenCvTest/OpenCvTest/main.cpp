@@ -201,6 +201,7 @@ void captureToYuv(){
 	*  always be added to the end of x265_picture */
 	x265_picture pic_orig, pic_out;
 	x265_picture *pic_in = &pic_orig;
+	x265_picture *pic_recon = &pic_out;
 
 
 	/***
@@ -222,43 +223,64 @@ void captureToYuv(){
 	x265_encoder *encoder = x265_encoder_open(param);
 	//x265_encoder_encode(encoder, &pp_nal, &pi_nal, pic_in, pic_out);
 
-	Mat frame;
-
-	bool bSuccess = vcap.read(frame); // read a new frame from video
-
-	if (!bSuccess) //if not success, break loop
+	std::fstream bitstreamFile;
+	bitstreamFile.open("testout.hevc", std::fstream::binary | std::fstream::out);
+	if (!bitstreamFile)
 	{
-		cout << "ERROR: Cannot read a frame from video file" << endl;
-		
+		x265_log(NULL, X265_LOG_ERROR, "failed to open bitstream file <%s> for writing\n", "testout.hevc");
+		return;
 	}
 
-	imshow("MyVideo", frame); //show the frame in "MyVideo" window
+	while (1){
 
-	int depth = 8;
-	int colorSpace = 1;
+		Mat frame;
 
-	uint32_t pixelbytes = depth > 8 ? 2 : 1;
-	pic_orig.colorSpace = colorSpace;
-	pic_orig.bitDepth = depth;
-	pic_orig.stride[0] = frame_width * pixelbytes;
-	pic_orig.stride[1] = pic_orig.stride[0] >> x265_cli_csps[colorSpace].width[1];
-	pic_orig.stride[2] = pic_orig.stride[0] >> x265_cli_csps[colorSpace].width[2];
-	pic_orig.planes[0] = frame;
-	pic_orig.planes[1] = (char*)pic_orig.planes[0] + pic_orig.stride[0] * frame_height;
-	pic_orig.planes[2] = (char*)pic_orig.planes[1] + pic_orig.stride[1] * (frame_height >> x265_cli_csps[colorSpace].height[1]);
+		bool bSuccess = vcap.read(frame); // read a new frame from video
 
+		if (!bSuccess) //if not success, break loop
+		{
+			cout << "ERROR: Cannot read a frame from video file" << endl;
 
+		}
 
-	if (waitKey(10) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
-	{
-		cout << "esc key is pressed by user" << endl;
-		
+		imshow("MyVideo", frame); //show the frame in "MyVideo" window
+
+		int depth = 8;
+		int colorSpace = 1;
+
+		uint32_t pixelbytes = depth > 8 ? 2 : 1;
+		pic_orig.colorSpace = colorSpace;
+		pic_orig.bitDepth = depth;
+		pic_orig.stride[0] = frame_width * pixelbytes;
+		pic_orig.stride[1] = pic_orig.stride[0] >> x265_cli_csps[colorSpace].width[1];
+		pic_orig.stride[2] = pic_orig.stride[0] >> x265_cli_csps[colorSpace].width[2];
+		pic_orig.planes[0] = frame.data;
+		pic_orig.planes[1] = (char*)pic_orig.planes[0] + pic_orig.stride[0] * frame_height;
+		pic_orig.planes[2] = (char*)pic_orig.planes[1] + pic_orig.stride[1] * (frame_height >> x265_cli_csps[colorSpace].height[1]);
+
+		int encoded = x265_encoder_encode(encoder, &pp_nal, &pi_nal, pic_in, pic_recon);
+
+		if (pi_nal){
+			for (uint32_t i = 0; i < pi_nal; i++)
+			{
+				bitstreamFile.write((const char*)pp_nal->payload, pp_nal->sizeBytes);
+				//totalbytes += nal->sizeBytes;
+				pp_nal++;
+			}
+		}
+		if (waitKey(10) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
+		{
+			cout << "esc key is pressed by user" << endl;
+			break;
+
+		}
+
 	}
 
-
-
-
+	//bitstreamFile.close();
 }
+
+
 
 int main(int argc, char** argv){
 

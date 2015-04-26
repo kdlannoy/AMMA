@@ -4,14 +4,13 @@
 #include <string>
 #include <iostream>
 #include <opencv\cv.h>
-#include <opencv\highgui.h>
+//#include <opencv\highgui.h>
 #include <zmq.h>
 #include <WinSock2.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <opencv/../../include/opencv2/opencv.hpp>
-//#include <opencv/../opencv.hpp
+//#include <opencv/../../include/opencv2/opencv.hpp>
 #include <thread>
 #include <bitset>
 #include "SteganoRaw.h"
@@ -22,15 +21,15 @@
 
 using namespace cv;
 using namespace std;
-#define IMG_SIZE 19200
-#define BUFLEN 1920
+int IMG_SIZE = 19200;
+#define BUFLEN 1024
 
 
 void server(){
 
 	//init socket	
 	int rc = 0;
-	uchar* img = (uchar*)malloc(IMG_SIZE);
+	uchar* img = (uchar*)malloc(IMG_SIZE*3);
 	char buf[BUFLEN];
 	void *context = zmq_ctx_new();
 
@@ -50,19 +49,32 @@ void server(){
 		//cout << "Test" << endl;
 
 		//receive chunks of data
+		
 		for (int i = 0; i < IMG_SIZE / BUFLEN + 1; i++){
-			rc = zmq_recv(socket, buf, BUFLEN, 0);
+			if ((i+1)*BUFLEN <= IMG_SIZE){
+				rc = zmq_recv(socket, buf, BUFLEN, 0);
+			}
+			else{
+				rc = zmq_recv(socket, buf, (IMG_SIZE % BUFLEN), 0);
 
+			}
 			if (rc == -1){
 				cout << "Error receiving image." << endl;
 				break;
 			}
 
-			memcpy(img + i*BUFLEN, buf, BUFLEN);
+			if ((i+1)*BUFLEN <= IMG_SIZE){
+				img = (uchar*)realloc()
+				memcpy(img + i*BUFLEN, buf, BUFLEN);
+			}
+			else{
+				memcpy(img + ((i-1)*BUFLEN)+IMG_SIZE%BUFLEN, buf, BUFLEN);
+			}
+			
 		}
 
 
-		Mat imageToShow = Mat(144, 176, 16, img);
+		Mat imageToShow = Mat::zeros(120, 160, CV_8UC3);
 		imageToShow.data = img;
 		imshow("Afbeelding", imageToShow);
 		if (waitKey(1)>0)
@@ -117,9 +129,9 @@ void client(){
 	VideoCapture stream1(0);
 	//Capture in YUV (4:2:0)
 	stream1.set(CV_CAP_PROP_FRAME_WIDTH, 160);
-	stream1.set(CV_CAP_PROP_FRAME_WIDTH, 120);
-	stream1.set(CV_CAP_PROP_CONVERT_RGB, false);
-	
+	stream1.set(CV_CAP_PROP_FRAME_HEIGHT, 120);
+	//stream1.set(CV_CAP_PROP_CONVERT_RGB, true);
+	IMG_SIZE = stream1.get(CV_CAP_PROP_FRAME_WIDTH)*stream1.get(CV_CAP_PROP_FRAME_HEIGHT)*3;
 
 	while (1){
 		////query frame
@@ -131,10 +143,10 @@ void client(){
 
 		stream1.read(cameraFrame);
 
-		/*		imshow("Testingwindow", cameraFrame);
+				imshow("Testingwindow", cameraFrame);
 		if (waitKey(1) >= 0)
 		break;
-		*/
+		
 
 
 		//cout << "Cols: " << (int)cameraFrame.cols <<  "\nRows: " << (int)cameraFrame.rows << "\nType: " << (int)cameraFrame.type() << endl;
@@ -144,11 +156,16 @@ void client(){
 		
 		
 		uchar* img = cameraFrame.data;
-		int img_size = cameraFrame.cols*cameraFrame.rows * 3;
+		int img_size = cameraFrame.size().height*cameraFrame.size().width;
 
 
 		for (int i = 0; i < img_size / BUFLEN + 1; i++){
-			rc = zmq_send(socket, (img + i*BUFLEN), BUFLEN, 0);
+			if ((i+1)*BUFLEN < img_size){
+				rc = zmq_send(socket, (img + i*BUFLEN), BUFLEN, 0);
+			}
+			else{
+				rc = zmq_send(socket, (img + (i - 1)*BUFLEN + (img_size % BUFLEN)), img_size % BUFLEN, 0);
+			}
 
 			if (rc == -1){
 				cout << "Error while sending" << endl;
@@ -212,12 +229,11 @@ void captureToYuv(){
 }
 
 int main(int argc, char** argv){
-	/*thread t1(server);
 	thread t1(server);
 	thread t2(client);
 	t1.join();
 	t2.join();
-	return 0;*/
+	return 0;
 	//Mat matimg = imread("C:/Users/kiani/Downloads/fruit.jpg");
 	//string input;
 	//getline(cin, input);
@@ -237,6 +253,6 @@ int main(int argc, char** argv){
 	////IplImage* img2 = cvLoadImage("C:/Users/kiani/Downloads/test.jpg");
 	//printf("result: %s",imgDestega(img));
 	//std::getchar();
-	captureToYuv();
+	//captureToYuv();
 
 }

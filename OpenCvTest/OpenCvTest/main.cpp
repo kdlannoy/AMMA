@@ -21,15 +21,89 @@
 
 using namespace cv;
 using namespace std;
-int IMG_SIZE = 19200;
+int img_size = 57600;
 #define BUFLEN 1024
 
+void client(){
+	//initialize the socket
+	int rc = 0;
+	void *context = zmq_ctx_new();
+	void *socket = zmq_socket(context, ZMQ_PAIR);
+
+	//CameraReader camera = new CameraReader();
+
+	cout << "Enter ip of server" << endl;
+	string ipaddress;
+	cin >> ipaddress;
+	cout << "Server ip: " << "tcp://" + ipaddress + ":9000" << endl;
+	cout << "Initialize socket" << endl;
+	rc = zmq_connect(socket, ("tcp://" + ipaddress + ":9000").c_str()); /*127.0.0.1*/
+	cout << "RC: " + rc << endl;
+
+
+	//initialize camera
+	/*CvCapture* capture = cvCreateCameraCapture(0);
+	if(!capture){
+	cout<<"No camera found."<<endl;
+	return 1;
+	}*/
+
+	VideoCapture stream1(0);
+	stream1.set(CV_CAP_PROP_CONVERT_RGB, false);
+	stream1.set(CV_CAP_PROP_FRAME_HEIGHT, 120);
+	stream1.set(CV_CAP_PROP_FRAME_WIDTH, 160);
+
+
+	while (1){
+		Mat cameraFrame;
+
+		stream1.read(cameraFrame);
+
+		/*imshow("Sending", cameraFrame);*/
+
+		if (waitKey(1) >= 0)
+			break;
+
+
+
+		//cout << "Cols: " << (int)cameraFrame.cols <<  "\nRows: " << (int)cameraFrame.rows << "\nType: " << (int)cameraFrame.type() << endl;
+
+		//         //   //sending frame
+
+
+
+		uchar* img = cameraFrame.data;
+		img_size = cameraFrame.total()*cameraFrame.elemSize();
+
+
+		for (int i = 0; i < img_size / BUFLEN + 1; i++){
+			if (i == 0){
+				rc = zmq_send(socket, (img + i*BUFLEN), BUFLEN, 0);
+			}
+			else if ((i + 1)*BUFLEN <= img_size){
+				rc = zmq_send(socket, (img + i*BUFLEN), BUFLEN, ZMQ_SNDMORE);
+			}
+			else{
+				rc = zmq_send(socket, (img + i*BUFLEN), img_size % BUFLEN, 0);
+			}
+
+			if (rc == -1){
+				cout << "Error while sending" << endl;
+				return;
+			}
+		}
+
+	}
+
+	zmq_close(socket);
+	zmq_ctx_destroy(context);
+}
 
 void server(){
 
 	//init socket	
 	int rc = 0;
-	uchar* img = (uchar*)malloc(IMG_SIZE*3);
+	uchar* img = (uchar*)malloc(img_size*sizeof(uchar));
 	char buf[BUFLEN];
 	void *context = zmq_ctx_new();
 
@@ -45,17 +119,22 @@ void server(){
 		return;
 	}
 
+	
+
 	while (1){
 		//cout << "Test" << endl;
 
 		//receive chunks of data
 		
-		for (int i = 0; i < IMG_SIZE / BUFLEN + 1; i++){
-			if ((i+1)*BUFLEN <= IMG_SIZE){
+		for (int i = 0; i < img_size / BUFLEN + 1; i++){
+			if (i == 0){
 				rc = zmq_recv(socket, buf, BUFLEN, 0);
 			}
+			else if ((i + 1)*BUFLEN <= img_size){
+				rc = zmq_recv(socket, buf, BUFLEN, ZMQ_RCVMORE);
+			}
 			else{
-				rc = zmq_recv(socket, buf, (IMG_SIZE % BUFLEN), 0);
+				rc = zmq_recv(socket, buf, (img_size % BUFLEN), 0);
 
 			}
 			if (rc == -1){
@@ -63,12 +142,12 @@ void server(){
 				break;
 			}
 
-			if ((i+1)*BUFLEN <= IMG_SIZE){
-				img = (uchar*)realloc()
+			if ((i + 1)*BUFLEN <= img_size){
+				img = (uchar*)realloc(img, (i + 1)*BUFLEN *sizeof(uchar));
 				memcpy(img + i*BUFLEN, buf, BUFLEN);
 			}
 			else{
-				memcpy(img + ((i-1)*BUFLEN)+IMG_SIZE%BUFLEN, buf, BUFLEN);
+				memcpy(img + ((i)*BUFLEN), buf, img_size%BUFLEN);
 			}
 			
 		}
@@ -102,84 +181,7 @@ void server(){
 	zmq_ctx_destroy(context);
 }
 
-void client(){
-	//initialize the socket
-	int rc = 0;
-	void *context = zmq_ctx_new();
-	void *socket = zmq_socket(context, ZMQ_PAIR);
 
-	//CameraReader camera = new CameraReader();
-
-	cout << "Enter ip of server" << endl;
-	string ipaddress;
-	cin >> ipaddress;
-	cout << "Server ip: " << "tcp://" + ipaddress + ":9000" << endl;
-	cout << "Initialize socket" << endl;
-	rc = zmq_connect(socket, ("tcp://" + ipaddress + ":9000").c_str()); /*127.0.0.1*/
-	cout << "RC: " + rc << endl;
-
-
-	//initialize camera
-	/*CvCapture* capture = cvCreateCameraCapture(0);
-	if(!capture){
-	cout<<"No camera found."<<endl;
-	return 1;
-	}*/
-
-	VideoCapture stream1(0);
-	//Capture in YUV (4:2:0)
-	stream1.set(CV_CAP_PROP_FRAME_WIDTH, 160);
-	stream1.set(CV_CAP_PROP_FRAME_HEIGHT, 120);
-	//stream1.set(CV_CAP_PROP_CONVERT_RGB, true);
-	IMG_SIZE = stream1.get(CV_CAP_PROP_FRAME_WIDTH)*stream1.get(CV_CAP_PROP_FRAME_HEIGHT)*3;
-
-	while (1){
-		////query frame
-		//static IplImage *frame = NULL;
-		//frame = cvQueryFrame(capture);
-		////cvShowImage("Sending", frame);
-
-		Mat cameraFrame;
-
-		stream1.read(cameraFrame);
-
-				imshow("Testingwindow", cameraFrame);
-		if (waitKey(1) >= 0)
-		break;
-		
-
-
-		//cout << "Cols: " << (int)cameraFrame.cols <<  "\nRows: " << (int)cameraFrame.rows << "\nType: " << (int)cameraFrame.type() << endl;
-
-		//         //   //sending frame
-
-		
-		
-		uchar* img = cameraFrame.data;
-		int img_size = cameraFrame.size().height*cameraFrame.size().width;
-
-
-		for (int i = 0; i < img_size / BUFLEN + 1; i++){
-			if ((i+1)*BUFLEN < img_size){
-				rc = zmq_send(socket, (img + i*BUFLEN), BUFLEN, 0);
-			}
-			else{
-				rc = zmq_send(socket, (img + (i - 1)*BUFLEN + (img_size % BUFLEN)), img_size % BUFLEN, 0);
-			}
-
-			if (rc == -1){
-				cout << "Error while sending" << endl;
-				return;
-			}
-		}
-
-	}
-
-	zmq_close(socket);
-	zmq_ctx_destroy(context);
-
-
-}
 
 void captureToYuv(){
 	VideoCapture vcap(0);
@@ -229,10 +231,11 @@ void captureToYuv(){
 }
 
 int main(int argc, char** argv){
-	thread t1(server);
 	thread t2(client);
-	t1.join();
 	t2.join();
+	thread t1(server);
+	t1.join();
+	
 	return 0;
 	//Mat matimg = imread("C:/Users/kiani/Downloads/fruit.jpg");
 	//string input;

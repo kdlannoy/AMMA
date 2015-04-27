@@ -263,7 +263,8 @@ void captureToYuv(){
 		if (pi_nal){
 			for (uint32_t i = 0; i < pi_nal; i++)
 			{
-				bitstreamFile.write((const char*)pp_nal->payload, pp_nal->sizeBytes);
+				cout << pp_nal->payload << endl;
+				//bitstreamFile.write((const char*)pp_nal->payload, pp_nal->sizeBytes);
 				//totalbytes += nal->sizeBytes;
 				pp_nal++;
 			}
